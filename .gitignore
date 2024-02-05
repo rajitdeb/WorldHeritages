@@ -20,3 +20,7 @@ local.properties
 /gradle.properties
 /.idea/.gitignore
 /app/.gitignore
+/.idea/deploymentTargetDropDown.xml
+/.idea/kotlinc.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/vcs.xml
