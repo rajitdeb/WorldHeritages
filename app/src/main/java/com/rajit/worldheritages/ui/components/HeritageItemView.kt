@@ -17,11 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import com.rajit.worldheritages.R
 import com.rajit.worldheritages.data.model.HeritageEntity
 
@@ -57,7 +59,10 @@ fun HeritageItemView(
                         .background(Color.Black)
                         .width(150.dp)
                         .height(150.dp),
-                    model = heritage.image,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(heritage.image)
+                        .crossfade(enable = true)
+                        .build(),
                     placeholder = painterResource(id = R.drawable.placeholder),
                     error = painterResource(id = R.drawable.error_placeholder),
                     contentScale = ContentScale.FillBounds,
@@ -73,22 +78,22 @@ fun HeritageItemView(
 @Composable
 fun HeritageItemViewPreview(
     heritageEntity: HeritageEntity = HeritageEntity(
-    id = 4,
-    year = 1978,
-    target = "DEU",
-    name = "Aachen Cathedral 2",
-    type = "Cultural",
-    region = "EUR",
-    regionLong = "Europe and NorthAmerica",
-    coordinates = "N50 40 28 E6 5 4",
-    lat = 50.77444444444444,
-    lng = 6.084444444444444,
-    page = "http://whc.unesco.org/en/list/3",
-    image = "https://whc.unesco.org/uploads/thumbs/site_0003_0001-750-750-20151104122109.jpg",
-    imageAuthor = "Aachen Cathedral © Mario Santana",
-    shortInfo = "Aachen Cathedral \\n\\nConstruction of this palatine chapel, with its octagonal basilica and cupola, began c. 790–800 under the Emperor Charlemagne.",
-    longInfo = "With"
-)
+        id = 4,
+        year = 1978,
+        target = "DEU",
+        name = "Aachen Cathedral 2",
+        type = "Cultural",
+        region = "EUR",
+        regionLong = "Europe and NorthAmerica",
+        coordinates = "N50 40 28 E6 5 4",
+        lat = 50.77444444444444,
+        lng = 6.084444444444444,
+        page = "http://whc.unesco.org/en/list/3",
+        image = "https://whc.unesco.org/uploads/thumbs/site_0003_0001-750-750-20151104122109.jpg",
+        imageAuthor = "Aachen Cathedral © Mario Santana",
+        shortInfo = "Aachen Cathedral \\n\\nConstruction of this palatine chapel, with its octagonal basilica and cupola, began c. 790–800 under the Emperor Charlemagne.",
+        longInfo = "With"
+    )
 ) {
 
     HeritageItemView(heritage = heritageEntity)
