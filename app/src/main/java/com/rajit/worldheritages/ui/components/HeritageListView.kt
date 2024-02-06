@@ -24,7 +24,8 @@ fun HeritageListView(
         val lazyPagingItems = mainViewModel.heritageList.collectAsLazyPagingItems()
 
         LaunchedEffect(key1 = lazyPagingItems) {
-            mainViewModel.fetchAllHeritages()
+//            mainViewModel.fetchAllHeritages()
+            mainViewModel.fetchAllHeritagesByFilter(country = "IND")
         }
 
         LazyColumn(

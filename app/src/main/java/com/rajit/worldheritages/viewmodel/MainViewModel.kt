@@ -59,4 +59,46 @@ class MainViewModel(private val repository: Repository) : ViewModel() {
 
     }
 
+    // Fetch all heritage sites based on Filters
+    fun fetchAllHeritagesByFilter(
+        country: String = "",
+        tag: String = "",
+        startYear: Int = 1901,
+        endYear: Int = 2024
+    ) = viewModelScope.launch(Dispatchers.IO) {
+
+        val heritageList: Resource<PagingSource<Int, HeritageEntity>> =
+            repository.fetchAllHeritagesByFilter(country, tag, startYear, endYear)
+
+        when (heritageList) {
+
+            is Resource.Success -> {
+                heritageList.data?.let {
+
+//                    Log.i("MainViewModel", "WorldHeritageLiveData: $it")
+
+                    // Construct Pager
+                    Pager(
+                        config = PagingConfig(
+                            pageSize = Constants.PAGE_SIZE,
+                            enablePlaceholders = true
+                        ),
+                        pagingSourceFactory = PagingSourceFactory { heritageList.data }
+                    ).flow.collect { pagedData ->
+
+                        // Returning PagingData from the Pager for the consumer to consume
+                        _heritageList.value = pagedData
+                    }
+
+                }
+            }
+
+            is Resource.Error -> {
+                Log.e("Error", "Error: ${heritageList.message}")
+            }
+
+        }
+
+    }
+
 }
