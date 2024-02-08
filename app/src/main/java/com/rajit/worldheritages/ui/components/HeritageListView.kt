@@ -5,11 +5,11 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.itemKey
 import com.rajit.worldheritages.viewmodel.MainViewModel
 import org.koin.androidx.compose.koinViewModel
 
@@ -21,21 +21,27 @@ fun HeritageListView(
 
     if (mainViewModel != null) {
 
-        val lazyPagingItems = mainViewModel.heritageList.collectAsLazyPagingItems()
-
-        LaunchedEffect(key1 = lazyPagingItems) {
-//            mainViewModel.fetchAllHeritages()
-            mainViewModel.fetchAllHeritagesByFilter(country = "IND")
-        }
+        val lazyPagingItems = mainViewModel.fetchAllHeritages().collectAsLazyPagingItems()
+//        val lazyPagingItems =
+//            mainViewModel.fetchAllHeritagesByFilter(country = "IND").collectAsLazyPagingItems()
 
         LazyColumn(
             contentPadding = PaddingValues(vertical = 16.dp),
             modifier = modifier.padding(horizontal = 16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            items(lazyPagingItems.itemCount) { index ->
-//            Log.i("MainActivity", "WorldHeritageLiveData: ${lazyPagingItems[index]}")
-                HeritageItemView(heritage = lazyPagingItems[index])
+            items(
+                count = lazyPagingItems.itemCount,
+                key = lazyPagingItems.itemKey { it.id }
+            ) { index ->
+
+                val currentHeritageItem = lazyPagingItems[index]
+
+                if (currentHeritageItem != null) {
+//                    Log.i("MainActivity", "WorldHeritageLiveData: ${currentHeritageItem.image}")
+                    HeritageItemView(heritage = lazyPagingItems[index])
+                }
+
             }
         }
     }
