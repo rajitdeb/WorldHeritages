@@ -6,9 +6,9 @@ An android app for helping people discover W​orld Heritages​ around the plan
 ![Release Version](https://img.shields.io/badge/release-v1.0.0-blue)
 
 ## Screenshots 📷
-| Screenshot 1 | Screenshot 2 |
-| ------------ | ------------ |
-|[![world-heritage-1.jpg](https://i.postimg.cc/Fs4CtsKb/world-heritage-1.jpg)](https://postimg.cc/vD0tfyfD) | [![world-heritage-2.jpg](https://i.postimg.cc/TPzqrCLj/world-heritage-2.jpg)](https://postimg.cc/gwKZpyKr) |
+| Screenshot 1 | Screenshot 2 | Screenshot 3 (v2)                                                                                              |
+| ------------ | ------------ |----------------------------------------------------------------------------------------------------------------|
+|[![world-heritage-1.jpg](https://i.postimg.cc/Fs4CtsKb/world-heritage-1.jpg)](https://postimg.cc/vD0tfyfD) | [![world-heritage-2.jpg](https://i.postimg.cc/TPzqrCLj/world-heritage-2.jpg)](https://postimg.cc/gwKZpyKr) | [![world-heritage-1v2.jpg](https://i.postimg.cc/PJF1chwn/world-heritage-1v2.jpg)](https://postimg.cc/xNMkJw56) |
 
 ## Libraries Used 💻
 | Library | Description |
