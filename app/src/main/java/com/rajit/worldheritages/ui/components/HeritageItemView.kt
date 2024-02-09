@@ -3,21 +3,26 @@ package com.rajit.worldheritages.ui.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -29,7 +34,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.rajit.worldheritages.R
 import com.rajit.worldheritages.data.model.HeritageEntity
+import com.rajit.worldheritages.util.Constants
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HeritageItemView(
     modifier: Modifier = Modifier,
@@ -42,42 +49,94 @@ fun HeritageItemView(
             elevation = CardDefaults.cardElevation(8.dp)
         ) {
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Column(modifier.weight(1f)) {
-                    Text(
-                        text = heritage.name,
-                        style = TextStyle(
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp
-                        ),
-                        modifier = modifier.padding(16.dp)
+            Column {
+
+                // Heritage Detail View
+                Row(
+                    modifier = modifier.padding(
+                        top = 16.dp,
+                        start = 16.dp,
+                        end = 16.dp
                     )
-                    Text(
-                        text = heritage.shortInfo.substringAfter("\n\n"),
-                        maxLines = 7,
-                        overflow = TextOverflow.Ellipsis,
-                        modifier = modifier.padding(16.dp)
+                ) {
+                    Column(modifier.weight(1f)) {
+
+                        Text(
+                            text = heritage.name,
+                            style = TextStyle(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            ),
+                            maxLines = 2,
+                            overflow = TextOverflow.Ellipsis
+                        )
+
+                        Text(
+                            text = heritage.shortInfo.substringAfter("\n\n"),
+                            fontSize = 13.sp,
+                            maxLines = 3,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = modifier.padding(top = 8.dp)
+                        )
+                    }
+
+                    Spacer(modifier.width(10.dp))
+
+                    AsyncImage(
+                        modifier = modifier
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color.Black)
+                            .width(110.dp)
+                            .aspectRatio(1 / 1f),
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(heritage.image)
+                            .crossfade(enable = true)
+                            .build(),
+                        placeholder = painterResource(id = R.drawable.placeholder),
+                        error = painterResource(id = R.drawable.error_placeholder),
+                        contentScale = ContentScale.FillBounds,
+                        contentDescription = "${heritage.name} Photo",
                     )
                 }
 
-                AsyncImage(
+                // Heritage Type and Country Chips
+                Row(
                     modifier = modifier
-                        .padding(end = 16.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                        .background(Color.Black)
-                        .width(150.dp)
-                        .height(150.dp),
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(heritage.image)
-                        .crossfade(enable = true)
-                        .build(),
-                    placeholder = painterResource(id = R.drawable.placeholder),
-                    error = painterResource(id = R.drawable.error_placeholder),
-                    contentScale = ContentScale.FillBounds,
-                    contentDescription = "${heritage.name} Photo",
-                )
+                        .fillMaxWidth()
+                        .padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            bottom = 10.dp
+                        )
+                ) {
+
+                    FilterChip(
+                        selected = true,
+                        onClick = { /*Do Nothing For Now*/ },
+                        label = { Text(heritage.type, color = Color.White) },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = colorResource(R.color.purple_500)
+                        ),
+                        shape = CircleShape
+                    )
+
+                    Spacer(modifier = modifier.width(10.dp))
+
+                    FilterChip(
+                        selected = true,
+                        onClick = { /*Do Nothing For Now*/ },
+                        label = {
+                            Text(
+                                Constants.convertCountryShortToFullText(heritage.target),
+                                color = Color.White
+                            )
+                        },
+                        colors = FilterChipDefaults.filterChipColors(
+                            selectedContainerColor = colorResource(R.color.purple_500)
+                        ),
+                        shape = CircleShape
+                    )
+                }
             }
 
         }
