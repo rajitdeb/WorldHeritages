@@ -78,6 +78,9 @@ fun MyScaffold(mainViewModel: MainViewModel) {
                     MyBottomSheet(
                         onSubmit = {
 
+                            // Saving User Preferences
+                            mainViewModel.saveCountryAndTagPreference(it.first, it.second)
+
                             if (it.first != Constants.DEFAULT_COUNTRY_FILTER
                                 && it.second == Constants.DEFAULT_TAG_FILTER
                             ) { // Check if the Tag is DEFAULT
@@ -103,7 +106,10 @@ fun MyScaffold(mainViewModel: MainViewModel) {
                                 heritageList = mainViewModel.fetchAllHeritagesByFilter()
                             }
                         },
-                        onReset = {},
+                        onReset = {
+                            // Resetting the User Country and Tag Preferences to Default
+                            mainViewModel.resetUserCountryAndTagPreference()
+                        },
                         onDismiss = { showBottomSheet = false }
                     )
                 }

@@ -6,6 +6,10 @@ object Constants {
     const val TABLE_NAME = "HeritageTable"
     const val PAGE_SIZE = 20
 
+    const val USER_FILTER_PREFERENCES_NAME = "UserFilterPreferences"
+    const val USER_COUNTRY_PREFERENCE_KEY = "CountryPref"
+    const val USER_TAG_PREFERENCE_KEY = "TagPref"
+
     const val DEFAULT_COUNTRY_FILTER = "ALL"
     const val DEFAULT_TAG_FILTER = "All"
 

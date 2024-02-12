@@ -27,20 +27,26 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.rajit.worldheritages.R
-import com.rajit.worldheritages.util.Constants
+import com.rajit.worldheritages.viewmodel.MainViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MyBottomSheet(
     onSubmit: (Pair<String, String>) -> Unit,
     onReset: () -> Unit,
-    onDismiss: () -> Unit
+    onDismiss: () -> Unit,
+    mainViewModel: MainViewModel = koinViewModel()
 ) {
 
     val mAppContext = LocalContext.current.applicationContext
     val mSheetState = rememberModalBottomSheetState()
-    var mSelectedCountry by remember { mutableStateOf(Constants.DEFAULT_COUNTRY_FILTER) }
-    var mSelectedTag by remember { mutableStateOf(Constants.DEFAULT_TAG_FILTER) }
+    var mSelectedCountry by remember {
+        mutableStateOf(mainViewModel.getCountryAndTagPreference().first)
+    }
+    var mSelectedTag by remember {
+        mutableStateOf(mainViewModel.getCountryAndTagPreference().second)
+    }
 
     ModalBottomSheet(
         onDismissRequest = { onDismiss() },

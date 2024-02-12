@@ -7,7 +7,10 @@ import org.koin.dsl.module
 val mainViewModelModule = module {
 
     viewModel {
-        MainViewModel(repository = get())
+        MainViewModel(
+            repository = get(),
+            preferenceManager = get()
+        )
     }
 
 }

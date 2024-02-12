@@ -10,7 +10,3 @@ val assetManagerModule: (application: WorldHeritageApplication) -> Module = { ap
         single { application.assets }
     }
 }
-
-//fun assetManagerModule(application: WorldHeritageApplication): Module = module {
-//    single { application.assets }
-//}
