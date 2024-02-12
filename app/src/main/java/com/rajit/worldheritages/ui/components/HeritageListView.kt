@@ -8,22 +8,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.paging.compose.collectAsLazyPagingItems
+import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.itemKey
-import com.rajit.worldheritages.viewmodel.MainViewModel
-import org.koin.androidx.compose.koinViewModel
+import com.rajit.worldheritages.data.model.HeritageEntity
 
 @Composable
 fun HeritageListView(
     modifier: Modifier = Modifier,
-    mainViewModel: MainViewModel? = koinViewModel()
+    lazyPagingItems: LazyPagingItems<HeritageEntity>?
 ) {
 
-    if (mainViewModel != null) {
-
-        val lazyPagingItems = mainViewModel.fetchAllHeritages().collectAsLazyPagingItems()
-//        val lazyPagingItems =
-//            mainViewModel.fetchAllHeritagesByFilter(country = "IND").collectAsLazyPagingItems()
+    if (lazyPagingItems != null) {
 
         LazyColumn(
             contentPadding = PaddingValues(vertical = 16.dp),
@@ -51,5 +46,5 @@ fun HeritageListView(
 @Preview
 @Composable
 fun HeritageListViewPreview() {
-    HeritageListView()
+    HeritageListView(lazyPagingItems = null)
 }

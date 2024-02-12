@@ -109,4 +109,7 @@ dependencies {
     // Moshi
     implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
 
+    // Extended Material Icons
+    implementation("androidx.compose.material:material-icons-extended:1.6.1")
+
 }
