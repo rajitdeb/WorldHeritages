@@ -18,6 +18,7 @@ An android app for helping people discover W​orld Heritages​ around the plan
 | Coil | Used for Async Image Loading |
 | Paging | Used for loading data asynchronously |
 | Coroutines | Used for asynchronous code execution |
+| SharedPreferences | Used for saving User's Preferences |
 | Room | Used for data persistence |
 | ViewModel | Used for handling configuration changes |
 | Koin | Used for dependency injetion |
