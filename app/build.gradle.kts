@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId = "com.rajit.worldheritages"
-        minSdk = 21
+        minSdk = 23
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -111,5 +111,8 @@ dependencies {
 
     // Extended Material Icons
     implementation("androidx.compose.material:material-icons-extended:1.6.1")
+
+    // New Splash Screen API
+    implementation("androidx.core:core-splashscreen:1.0.0")
 
 }

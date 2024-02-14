@@ -23,6 +23,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.rajit.worldheritages.ui.components.HeritageListView
 import com.rajit.worldheritages.ui.components.MyBottomSheet
@@ -37,6 +38,7 @@ class MainActivity : ComponentActivity() {
     private val mainViewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        installSplashScreen()
         super.onCreate(savedInstanceState)
         setContent {
 

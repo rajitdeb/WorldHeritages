@@ -92,7 +92,7 @@ fun HeritageItemView(
                             .data(heritage.image)
                             .crossfade(enable = true)
                             .build(),
-                        placeholder = painterResource(id = R.drawable.placeholder),
+                        placeholder = painterResource(id = R.drawable.error_placeholder), // Place Placeholder instead of error_placeholder
                         error = painterResource(id = R.drawable.error_placeholder),
                         contentScale = ContentScale.FillBounds,
                         contentDescription = "${heritage.name} Photo",
