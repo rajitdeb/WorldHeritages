@@ -1,6 +1,7 @@
 package com.rajit.worldheritages.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -40,11 +41,14 @@ import com.rajit.worldheritages.util.Constants
 @Composable
 fun HeritageItemView(
     modifier: Modifier = Modifier,
-    heritage: HeritageEntity?
+    heritage: HeritageEntity?,
+    onListItemClicked: (HeritageEntity) -> Unit
 ) {
     if (heritage != null) {
         Card(
-            modifier = modifier.fillMaxWidth(),
+            modifier = modifier
+                .fillMaxWidth()
+                .clickable { onListItemClicked(heritage) },
             shape = RoundedCornerShape(8.dp),
             elevation = CardDefaults.cardElevation(8.dp)
         ) {
@@ -165,6 +169,8 @@ fun HeritageItemViewPreview(
     )
 ) {
 
-    HeritageItemView(heritage = heritageEntity)
+    HeritageItemView(heritage = heritageEntity) {
+
+    }
 
 }

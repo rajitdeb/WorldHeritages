@@ -15,7 +15,8 @@ import com.rajit.worldheritages.data.model.HeritageEntity
 @Composable
 fun HeritageListView(
     modifier: Modifier = Modifier,
-    lazyPagingItems: LazyPagingItems<HeritageEntity>?
+    lazyPagingItems: LazyPagingItems<HeritageEntity>?,
+    onListItemClicked: (HeritageEntity) -> Unit
 ) {
 
     if (lazyPagingItems != null) {
@@ -34,7 +35,10 @@ fun HeritageListView(
 
                 if (currentHeritageItem != null) {
 //                    Log.i("MainActivity", "WorldHeritageLiveData: ${currentHeritageItem.image}")
-                    HeritageItemView(heritage = lazyPagingItems[index])
+                    HeritageItemView(
+                        heritage = lazyPagingItems[index],
+                        onListItemClicked = onListItemClicked
+                    )
                 }
 
             }
@@ -46,5 +50,7 @@ fun HeritageListView(
 @Preview
 @Composable
 fun HeritageListViewPreview() {
-    HeritageListView(lazyPagingItems = null)
+    HeritageListView(lazyPagingItems = null) {
+
+    }
 }

@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("kotlin-parcelize")
 }
 
 android {
@@ -65,6 +66,7 @@ dependencies {
     val koinVersion = "3.5.3"
     val lifecycleVersion= "2.7.0"
     val pagingVersion = "3.2.1"
+    val navVersion = "2.7.7"
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
@@ -113,6 +115,12 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.6.1")
 
     // New Splash Screen API
-    implementation("androidx.core:core-splashscreen:1.0.0")
+    implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // Navigation Component for Jetpack Compose
+    implementation("androidx.navigation:navigation-compose:$navVersion")
+
+    // Gson
+    implementation("com.google.code.gson:gson:2.10.1")
 
 }

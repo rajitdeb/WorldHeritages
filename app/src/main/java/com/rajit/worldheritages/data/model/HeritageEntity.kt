@@ -1,8 +1,10 @@
 package com.rajit.worldheritages.data.model
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.rajit.worldheritages.util.Constants
+import kotlinx.parcelize.Parcelize
 
 /**
  * Structure of JSON Item
@@ -24,6 +26,7 @@ import com.rajit.worldheritages.util.Constants
  * "longInfo": "With"
  */
 
+@Parcelize
 @Entity(tableName = Constants.TABLE_NAME)
 data class HeritageEntity(
     @PrimaryKey(autoGenerate = false)
@@ -42,4 +45,4 @@ data class HeritageEntity(
     val imageAuthor: String,
     val shortInfo: String,
     val longInfo: String?
-)
+): Parcelable
