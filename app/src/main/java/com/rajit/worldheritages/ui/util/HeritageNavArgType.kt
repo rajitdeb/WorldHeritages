@@ -1,4 +1,4 @@
-package com.rajit.worldheritages.domain.util
+package com.rajit.worldheritages.ui.util
 
 import android.os.Bundle
 import androidx.navigation.NavType

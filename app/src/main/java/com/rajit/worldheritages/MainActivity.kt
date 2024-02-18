@@ -32,7 +32,7 @@ import androidx.navigation.navArgument
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.google.gson.Gson
 import com.rajit.worldheritages.data.model.HeritageEntity
-import com.rajit.worldheritages.domain.util.HeritageNavArgType
+import com.rajit.worldheritages.ui.util.HeritageNavArgType
 import com.rajit.worldheritages.ui.components.HeritageDetailScreen
 import com.rajit.worldheritages.ui.components.HeritageListView
 import com.rajit.worldheritages.ui.components.MyBottomSheet
