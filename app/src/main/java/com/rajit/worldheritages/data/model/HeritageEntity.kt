@@ -45,4 +45,22 @@ data class HeritageEntity(
     val imageAuthor: String,
     val shortInfo: String,
     val longInfo: String?
-): Parcelable
+) : Parcelable
+
+fun HeritageEntity.toFavouriteEntity() = FavouriteEntity(
+    id,
+    year,
+    target,
+    name,
+    type,
+    region,
+    regionLong,
+    coordinates,
+    lat,
+    lng,
+    page,
+    image,
+    imageAuthor,
+    shortInfo,
+    longInfo
+)

@@ -4,6 +4,7 @@ import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.rajit.worldheritages.data.db.dao.HeritageDao
+import com.rajit.worldheritages.data.model.FavouriteEntity
 import com.rajit.worldheritages.data.model.HeritageEntity
 import com.rajit.worldheritages.domain.util.ParserManager
 import com.rajit.worldheritages.util.Constants
@@ -13,16 +14,6 @@ class Repository(
     private val parserManager: ParserManager,
     private val heritageDao: HeritageDao
 ) {
-
-    fun fetchPagedHeritageList(): Flow<PagingData<HeritageEntity>> {
-        return Pager(
-            config = PagingConfig(
-                pageSize = Constants.PAGE_SIZE
-            )
-        ) {
-            heritageDao.getAllHeritages()
-        }.flow
-    }
 
     fun fetchAllPagedHeritagesByFilter(
         country: String,
@@ -47,6 +38,14 @@ class Repository(
         }.flow
     }
 
+    fun fetchAllFavourites(): Flow<List<FavouriteEntity>> {
+        return heritageDao.fetchAllFavourites()
+    }
+
+    fun getFavouriteByID(heritageID: Int): Boolean {
+        return heritageDao.getFavouriteByID(heritageID)
+    }
+
     /**
      * This function uses [ParserManager] to parse the JSON file and extract data in the form of {List<HeritageEntity>}
      * And then add this list to the DB Table
@@ -55,5 +54,13 @@ class Repository(
         val data = parserManager.parseAssetsToEntityList()
 //        Log.i("Repository", "Repository: insertAllHeritages: $data")
         heritageDao.insertAll(data)
+    }
+
+    suspend fun saveToFavourites(favouriteEntity: FavouriteEntity) {
+        heritageDao.saveToFavourites(favouriteEntity)
+    }
+
+    suspend fun deleteFavourites(favouriteEntity: FavouriteEntity) {
+        heritageDao.deleteFavourite(favouriteEntity)
     }
 }
