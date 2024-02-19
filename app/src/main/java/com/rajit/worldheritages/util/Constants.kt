@@ -4,6 +4,7 @@ object Constants {
 
     const val DB_NAME = "WorldHeritageDB"
     const val TABLE_NAME = "HeritageTable"
+    const val FAVOURITE_TABLE_NAME = "FavouritesTable"
     const val PAGE_SIZE = 20
 
     const val USER_FILTER_PREFERENCES_NAME = "UserFilterPreferences"

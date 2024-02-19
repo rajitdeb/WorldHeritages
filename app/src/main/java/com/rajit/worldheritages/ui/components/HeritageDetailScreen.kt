@@ -28,6 +28,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -49,15 +50,19 @@ import com.rajit.worldheritages.util.Constants
 
 @Composable
 fun HeritageDetailScreen(
+    isFavourite: Boolean,
     heritage: HeritageEntity,
-    onBackClicked: () -> Unit
+    onBackClicked: () -> Unit,
+    onFabClicked: (Boolean) -> Unit
 ) {
 
     val context = LocalContext.current.applicationContext
 
     Scaffold(
         topBar = { HeritageDetailTopAppBar(onBackClicked) },
-        floatingActionButton = { SaveToFavouriteFabButton() }
+        floatingActionButton = {
+            SaveToFavouriteFabButton(isFavourite, onFabClicked)
+        }
     ) { contentPadding ->
 
         LazyColumn(
@@ -116,13 +121,24 @@ fun HeritageDetailTopAppBar(
 }
 
 @Composable
-fun SaveToFavouriteFabButton() {
+fun SaveToFavouriteFabButton(
+    isFavourite: Boolean,
+    onFabClicked: (Boolean) -> Unit
+) {
 
-    var isBookMarked by remember {
-        mutableStateOf(false)
+    var isBookMarked by remember { mutableStateOf(isFavourite) }
+
+    // this LaunchedEffect is used to update isBookMarked variable when isFavourite changes
+    LaunchedEffect(isFavourite) {
+        isBookMarked = isFavourite
     }
 
-    FloatingActionButton(onClick = { isBookMarked = !isBookMarked }) {
+    FloatingActionButton(
+        onClick = {
+            onFabClicked(isBookMarked)
+            isBookMarked = !isFavourite
+        }
+    ) {
         Icon(
             imageVector = if (!isBookMarked) Icons.Default.BookmarkBorder else Icons.Default.Bookmark,
             contentDescription = "Save to Favourites Button"

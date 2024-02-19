@@ -6,6 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.rajit.worldheritages.data.db.dao.HeritageDao
+import com.rajit.worldheritages.data.model.FavouriteEntity
 import com.rajit.worldheritages.data.model.HeritageEntity
 import com.rajit.worldheritages.domain.repository.Repository
 import com.rajit.worldheritages.util.Constants
@@ -17,7 +18,11 @@ import kotlinx.coroutines.withContext
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 
-@Database(entities = [HeritageEntity::class], version = 1, exportSchema = false)
+@Database(
+    entities = [HeritageEntity::class, FavouriteEntity::class],
+    version = 1,
+    exportSchema = false
+)
 abstract class WorldHeritageDatabase: RoomDatabase() {
 
     abstract fun heritageDao(): HeritageDao

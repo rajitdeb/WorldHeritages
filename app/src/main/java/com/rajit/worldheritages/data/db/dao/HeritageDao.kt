@@ -2,10 +2,13 @@ package com.rajit.worldheritages.data.db.dao
 
 import androidx.paging.PagingSource
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.rajit.worldheritages.data.model.FavouriteEntity
 import com.rajit.worldheritages.data.model.HeritageEntity
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HeritageDao {
@@ -36,7 +39,19 @@ interface HeritageDao {
         endYear: Int
     ): PagingSource<Int, HeritageEntity>
 
+    @Query("SELECT * FROM FavouritesTable")
+    fun fetchAllFavourites(): Flow<List<FavouriteEntity>>
+
+    @Query("SELECT COUNT(*) FROM FavouritesTable WHERE id = :heritageID")
+    fun getFavouriteByID(heritageID: Int): Boolean
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertAll(list: List<HeritageEntity>)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun saveToFavourites(favouriteEntity: FavouriteEntity)
+
+    @Delete
+    suspend fun deleteFavourite(favouriteEntity: FavouriteEntity)
 
 }
