@@ -145,7 +145,7 @@ fun MyScaffold(
 
         mutableStateOf(
             mainViewModel.fetchAllHeritagesByFilter(
-                if (countryTagPref.first != "All") countryTagPref.first else "",
+                if (countryTagPref.first != "ALL") countryTagPref.first else "",
                 if (countryTagPref.second != "All") countryTagPref.second else ""
             )
         )
