@@ -10,7 +10,8 @@ An android app for helping people discover W​orld Heritages​ around the plan
 | ------------ | ------------ |----------------------------------------------------------------------------------------------------------------|
 | [![world-heritage-1.jpg](https://i.postimg.cc/Fs4CtsKb/world-heritage-1.jpg)](https://postimg.cc/vD0tfyfD) | [![world-heritage-2.jpg](https://i.postimg.cc/TPzqrCLj/world-heritage-2.jpg)](https://postimg.cc/gwKZpyKr) | [![1.jpg](https://i.postimg.cc/sxtcybCV/1.jpg)](https://postimg.cc/zHFWFtfM) |
 | [![2.jpg](https://i.postimg.cc/TP7NF71P/2.jpg)](https://postimg.cc/hJm0709F) | [![3.jpg](https://i.postimg.cc/JhfYRy3w/3.jpg)](https://postimg.cc/jWh4XSkv) | [![4.jpg](https://i.postimg.cc/jj0y5y1h/4.jpg)](https://postimg.cc/K1f1p3xK) |
-| [![5.jpg](https://i.postimg.cc/mrpz9MXq/5.jpg)](https://postimg.cc/NyTjqyw7) | [![6.jpg](https://i.postimg.cc/sxLvLZG8/6.jpg)](https://postimg.cc/CnjhB5NH) |
+| [![5.jpg](https://i.postimg.cc/mrpz9MXq/5.jpg)](https://postimg.cc/NyTjqyw7) | [![6.jpg](https://i.postimg.cc/sxLvLZG8/6.jpg)](https://postimg.cc/CnjhB5NH) | [![7.jpg](https://i.postimg.cc/yNvnJvvm/7.jpg)](https://postimg.cc/ns9qgY8r) |
+| [![8.jpg](https://i.postimg.cc/k4C6mmxw/8.jpg)](https://postimg.cc/2qH8Qg9B) |
 
 ## Libraries Used 💻
 | Library | Description |
