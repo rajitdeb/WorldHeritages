@@ -67,6 +67,7 @@ dependencies {
     val lifecycleVersion= "2.7.0"
     val pagingVersion = "3.2.1"
     val navVersion = "2.7.7"
+    val browserVersion = "1.7.0"
 
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
@@ -122,5 +123,8 @@ dependencies {
 
     // Gson
     implementation("com.google.code.gson:gson:2.10.1")
+
+    // AndroidX Browser Library
+    implementation("androidx.browser:browser:$browserVersion")
 
 }

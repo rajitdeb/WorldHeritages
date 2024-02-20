@@ -47,6 +47,7 @@ import coil.request.ImageRequest
 import com.rajit.worldheritages.R
 import com.rajit.worldheritages.data.model.HeritageEntity
 import com.rajit.worldheritages.util.Constants
+import com.rajit.worldheritages.util.CustomTab
 
 @Composable
 fun HeritageDetailScreen(
@@ -194,6 +195,8 @@ fun HeritageInformation(heritage: HeritageEntity) {
 @Composable
 fun HeritageDetailBasicInformation(heritage: HeritageEntity) {
 
+    val mContext = LocalContext.current
+
     Column(modifier = Modifier.fillMaxWidth()) {
 
         // Section Headline
@@ -221,7 +224,10 @@ fun HeritageDetailBasicInformation(heritage: HeritageEntity) {
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
-                onClick = { /*TODO("Implement Intent for opening links inside app")*/ },
+                onClick = {
+                    // Opens Link in Browser Window
+                    CustomTab.loadURL(mContext, heritage.page)
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(id = R.color.purple_500)
                 )
