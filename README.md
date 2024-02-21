@@ -1,5 +1,5 @@
 # About - WorldHeritages 🌟
-An android app for helping people discover W​orld Heritages​ around the planet. The UI of this app is built using Jetpack Compose. This is a practice app that helped me to learn more about Jetpack Compose as well as Jetpack Components alongside their implementation details.
+An android app for helping people discover W​orld Heritages​ recognised by UNESCO around the planet. The UI of this app is built using Jetpack Compose. This is a practice app that helped me to learn more about Jetpack Compose as well as Jetpack Components alongside their implementation details.
 
 ![Made With - Android](https://img.shields.io/badge/Made_With-Android-2ea44f?logo=android)
 ![Powered by - Kotlin](https://img.shields.io/badge/Powered_by-Kotlin-B322E9)
