@@ -1,5 +1,6 @@
 package com.rajit.worldheritages.ui.components
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -97,6 +98,8 @@ fun SaveToFavouriteFabButton(
     onFabClicked: (Boolean) -> Unit
 ) {
 
+    val mContext = LocalContext.current
+
     var isBookMarked by remember { mutableStateOf(isFavourite) }
 
     // this LaunchedEffect is used to update isBookMarked variable when isFavourite changes
@@ -107,7 +110,6 @@ fun SaveToFavouriteFabButton(
     FloatingActionButton(
         onClick = {
             onFabClicked(isBookMarked)
-            isBookMarked = !isFavourite
             isBookMarked = !isBookMarked
         }
     ) {
