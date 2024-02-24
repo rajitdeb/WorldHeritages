@@ -61,7 +61,6 @@ import com.rajit.worldheritages.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
-import java.util.regex.Pattern
 
 class MainActivity : ComponentActivity() {
 
@@ -184,7 +183,7 @@ fun MyFloatingActionButton(
 
     val currentRoute = currentBackStackEntry?.destination?.route
 
-    if(currentRoute != null && !currentRoute.contains("detail")) {
+    if (currentRoute != null && !currentRoute.contains("detail")) {
         FloatingActionButton(
             onClick = { onFilterClicked() }
         ) {
@@ -280,10 +279,14 @@ fun MyNavigation(
                         val encodedPageURL = Constants.encodeURLForNavigation(it.page)
                         val encodedImageURL = Constants.encodeURLForNavigation(it.image)
 
-                        // This is done because Navigation Compose doesn't directly support '\n' like characters
-                        // So, the Pattern.DOTALL flag is used make it work
-                        val formattedShortInfo = it.shortInfo.toPattern(Pattern.DOTALL)
-                        val formattedLongInfo = it.longInfo?.toPattern(Pattern.DOTALL)
+                        // This is done because Navigation Component can't directly use multiline string as argument
+                        // We need to encode the multiline string before passing it as argument
+                        val formattedShortInfo = Constants.encodeMultiLineString(it.shortInfo)
+                        val formattedLongInfo = if (it.longInfo.isNullOrEmpty()) {
+                            "Not Available"
+                        } else {
+                            Constants.encodeMultiLineString(it.longInfo.trim())
+                        }
 
                         navController.navigate(
                             route = "detail/${it.id}/${it.year}/${it.target}/${it.name}/${it.type}/${it.region}/${it.regionLong}/${it.coordinates}/${it.lat}/${it.lng}/$encodedPageURL/$encodedImageURL/${it.imageAuthor}/${formattedShortInfo}/$formattedLongInfo"
@@ -422,8 +425,8 @@ fun MyNavigation(
                     heritagePage!!,
                     heritageImageURL!!,
                     heritageImageAuthor!!,
-                    heritageShortInfo!!,
-                    heritageLongInfo
+                    Constants.decodeMultilineString(heritageShortInfo!!), // Since Compose decoding is not decoding multiline properly so we do it manually
+                    Constants.decodeMultilineString(heritageLongInfo!!) // Since Compose decoding is not decoding multiline properly so we do it manually
                 )
 
                 var isFavorite by remember { mutableStateOf(false) }

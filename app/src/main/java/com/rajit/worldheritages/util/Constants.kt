@@ -1,5 +1,6 @@
 package com.rajit.worldheritages.util
 
+import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
@@ -367,6 +368,19 @@ object Constants {
     // Decoding of this encoded URL is taken care of by Compose-Navigation
     fun encodeURLForNavigation(url: String): String {
         return URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
+    }
+
+    // Compose-Navigation can't directly use Multiline String in its navigation arguments
+    // So, we encode the Multiline String and then pass it as navArgument
+    // Decoding of this encoded Multiline String is taken care of by Compose-Navigation
+    fun encodeMultiLineString(multilineString: String): String {
+        return URLEncoder.encode(multilineString, StandardCharsets.UTF_8.toString())
+    }
+
+    // Compose-Navigation is decoding Multiline String abnormally
+    // So we are doing it ourselves
+    fun decodeMultilineString(multilineString: String): String {
+        return URLDecoder.decode(multilineString, StandardCharsets.UTF_8.toString())
     }
 
 }
