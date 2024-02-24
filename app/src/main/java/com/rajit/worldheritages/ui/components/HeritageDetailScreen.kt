@@ -110,6 +110,22 @@ fun SaveToFavouriteFabButton(
     FloatingActionButton(
         onClick = {
             onFabClicked(isBookMarked)
+
+            // Inform the user about the action performed when Bookmark FAB is pressed
+            if(!isBookMarked) {
+                Toast.makeText(
+                    mContext,
+                    "Heritage Saved Successfully",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                Toast.makeText(
+                    mContext,
+                    "Removed from Favourites",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+
             isBookMarked = !isBookMarked
         }
     ) {
