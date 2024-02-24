@@ -108,6 +108,7 @@ fun SaveToFavouriteFabButton(
         onClick = {
             onFabClicked(isBookMarked)
             isBookMarked = !isFavourite
+            isBookMarked = !isBookMarked
         }
     ) {
         Icon(
