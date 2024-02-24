@@ -9,6 +9,8 @@ import com.rajit.worldheritages.data.sharedpreference.PreferencesManager
 import com.rajit.worldheritages.domain.repository.Repository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 class MainViewModel(
@@ -16,14 +18,24 @@ class MainViewModel(
     private val preferenceManager: PreferencesManager
 ) : ViewModel() {
 
+    private var _countryTagPrefState: MutableStateFlow<Pair<String, String>> = MutableStateFlow(Pair("ALL", "All"))
+    val countryTagPref: StateFlow<Pair<String, String>> get()= _countryTagPrefState
+
+    init {
+        getCountryAndTagPreference()
+    }
+
     // Fetch all heritage sites based on Filters
     fun fetchAllHeritagesByFilter(
         country: String = "",
         tag: String = "",
         startYear: Int = 1901,
         endYear: Int = 2024
-    ): Flow<PagingData<HeritageEntity>> =
-        repository.fetchAllPagedHeritagesByFilter(country, tag, startYear, endYear)
+    ): Flow<PagingData<HeritageEntity>> {
+
+        return repository.fetchAllPagedHeritagesByFilter(country, tag, startYear, endYear)
+
+    }
 
     fun fetchAllFavourites(): Flow<List<FavouriteEntity>> {
         return repository.fetchAllFavourites()
@@ -34,6 +46,8 @@ class MainViewModel(
     }
 
     fun saveCountryAndTagPreference(countryValue: String, tagValue: String) {
+        val countryTagPair = Pair(countryValue, tagValue)
+        _countryTagPrefState.value = countryTagPair
         preferenceManager.saveCountryAndTagData(countryValue, tagValue)
     }
 
@@ -41,12 +55,14 @@ class MainViewModel(
     // So this function doesn't accept the Key Parameter
     fun resetUserCountryAndTagPreference() {
         preferenceManager.resetUserCountryTagPreferences()
+        getCountryAndTagPreference()
     }
 
     // Since we already have defined the Key in PreferenceManager
     // So this function doesn't accept the Key Parameter
-    fun getCountryAndTagPreference(): Pair<String, String> {
-        return preferenceManager.getCountryAndTagData()
+    fun getCountryAndTagPreference() {
+        val prefs = preferenceManager.getCountryAndTagData()
+        _countryTagPrefState.value = prefs
     }
 
     fun saveToFavourites(favouriteEntity: FavouriteEntity) = viewModelScope.launch(Dispatchers.IO) {
