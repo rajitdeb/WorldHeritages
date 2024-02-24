@@ -1,55 +1,69 @@
 package com.rajit.worldheritages
 
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.FilterAlt
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavBackStackEntry
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.google.gson.Gson
 import com.rajit.worldheritages.data.model.HeritageEntity
 import com.rajit.worldheritages.data.model.toFavouriteEntity
 import com.rajit.worldheritages.ui.components.HeritageDetailScreen
 import com.rajit.worldheritages.ui.components.HeritageListView
 import com.rajit.worldheritages.ui.components.MyBottomSheet
 import com.rajit.worldheritages.ui.theme.WorldHeritagesTheme
-import com.rajit.worldheritages.ui.util.HeritageNavArgType
 import com.rajit.worldheritages.util.Constants
 import com.rajit.worldheritages.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.util.regex.Pattern
 
 class MainActivity : ComponentActivity() {
-
-    // injecting viewModel instance using koin
-    private val mainViewModel: MainViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen()
@@ -62,138 +76,47 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Navigation(mainViewModel)
+
+                    MyMainScaffold()
                 }
             }
         }
     }
 }
 
-@Composable
-fun Navigation(
-    mainViewModel: MainViewModel = koinViewModel()
-) {
-
-    val navController = rememberNavController()
-
-    NavHost(navController = navController, startDestination = "main") {
-        composable(route = "main") {
-            MyScaffold(mainViewModel = mainViewModel) {
-                val json = Uri.encode(Gson().toJson(it))
-                navController.navigate("detail/$json")
-            }
-        }
-
-        composable(
-            route = "detail/{heritage}",
-            arguments = listOf(
-                navArgument("heritage") {
-                    type = HeritageNavArgType()
-                }
-            )
-        ) { navBackStackEntry ->
-            val heritageModel =
-                navBackStackEntry.arguments?.getParcelable<HeritageEntity>("heritage")
-
-            if (heritageModel != null) {
-
-                var isFavorite by remember { mutableStateOf(false) }
-
-                LaunchedEffect(key1 = Unit) {
-                    withContext(Dispatchers.IO) {
-                        isFavorite = mainViewModel.fetchFavouriteByID(heritageModel.id)
-                    }
-                }
-
-                HeritageDetailScreen(
-                    isFavourite = isFavorite,
-                    heritage = heritageModel,
-                    onBackClicked = {
-                        navController.navigate("main") {
-                            popUpTo("main") {
-                                inclusive = true
-                            }
-                        }
-                    },
-                    onFabClicked = {
-                        if (it) { // If Already Bookmarked, Delete Favourite
-                            mainViewModel.deleteFavourite(heritageModel.toFavouriteEntity())
-                        } else { // Otherwise Save to Favourites
-                            mainViewModel.saveToFavourites(heritageModel.toFavouriteEntity())
-                        }
-                    }
-                )
-            }
-        }
-    }
-
-}
-
-// My Main Screen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyScaffold(
-    mainViewModel: MainViewModel,
-    onListItemClicked: (HeritageEntity) -> Unit
-) {
+fun MyMainScaffold(mainViewModel: MainViewModel = koinViewModel()) {
 
     val mSheetScaffoldState = rememberBottomSheetScaffoldState()
     var showBottomSheet by remember { mutableStateOf(false) }
-    val countryTagPref = mainViewModel.getCountryAndTagPreference()
 
-    var heritageList by remember {
+    val navController = rememberNavController()
+    val currentBackStackEntry by navController.currentBackStackEntryAsState()
 
-        mutableStateOf(
-            mainViewModel.fetchAllHeritagesByFilter(
-                if (countryTagPref.first != "ALL") countryTagPref.first else "",
-                if (countryTagPref.second != "All") countryTagPref.second else ""
-            )
-        )
-    }
+    val countryTagPrefState = mainViewModel.countryTagPref.collectAsState()
 
     Scaffold(
+        topBar = { MyTopAppBar(currentBackStackEntry, navController) },
+        bottomBar = { MyBottomNavBar(currentBackStackEntry, navController) },
         floatingActionButton = {
-            FloatingActionButton(onClick = { showBottomSheet = true }) {
-                Icon(Icons.Filled.FilterAlt, "Filter Heritage Sites")
-            }
+            MyFloatingActionButton(
+                currentBackStackEntry = currentBackStackEntry,
+                onFilterClicked = { showBottomSheet = true }
+            )
         },
-        modifier = Modifier.fillMaxSize()
-    ) { paddingValues ->
+    ) { contentPadding ->
 
         BottomSheetScaffold(
             scaffoldState = mSheetScaffoldState,
             sheetContent = {
+
                 if (showBottomSheet) {
+
                     MyBottomSheet(
                         onSubmit = {
-
                             // Saving User Preferences
                             mainViewModel.saveCountryAndTagPreference(it.first, it.second)
-
-                            if (it.first != Constants.DEFAULT_COUNTRY_FILTER
-                                && it.second == Constants.DEFAULT_TAG_FILTER
-                            ) { // Check if the Tag is DEFAULT
-
-                                heritageList = mainViewModel
-                                    .fetchAllHeritagesByFilter(country = it.first)
-
-                            } else if (it.first == Constants.DEFAULT_COUNTRY_FILTER
-                                && it.second != Constants.DEFAULT_TAG_FILTER
-                            ) { // Check if the Country is DEFAULT
-
-                                heritageList = mainViewModel
-                                    .fetchAllHeritagesByFilter(tag = it.second)
-
-                            } else if (it.first != Constants.DEFAULT_COUNTRY_FILTER
-                                && it.second != Constants.DEFAULT_TAG_FILTER
-                            ) { // Check if BOTH are NOT DEFAULT
-
-                                heritageList = mainViewModel
-                                    .fetchAllHeritagesByFilter(country = it.first, tag = it.second)
-
-                            } else { // Both are set to Defaults, use the default parameters
-                                heritageList = mainViewModel.fetchAllHeritagesByFilter()
-                            }
                         },
                         onReset = {
                             // Resetting the User Country and Tag Preferences to Default
@@ -205,15 +128,360 @@ fun MyScaffold(
             },
             sheetPeekHeight = 0.dp
         ) {
-            Box(Modifier.padding(paddingValues)) {
-                HeritageListView(
-                    lazyPagingItems = heritageList.collectAsLazyPagingItems(),
-                    onListItemClicked = onListItemClicked
+            MyNavigation(
+                countryTagPrefState = countryTagPrefState,
+                contentPadding = contentPadding,
+                navController = navController
+            )
+        }
+    }
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MyTopAppBar(
+    currentBackStackEntry: NavBackStackEntry?,
+    navController: NavHostController
+) {
+    val currentRoute = currentBackStackEntry?.destination?.route
+
+    val topAppBarTitle = if (currentRoute != null && currentRoute.contains("detail")) {
+        "Heritage Details"
+    } else {
+        "World Heritages"
+    }
+
+    Log.i("MainActivity", "TopAppBar: Current Route: $currentRoute")
+
+    TopAppBar(
+        title = { Text(topAppBarTitle) },
+        navigationIcon = {
+            if (topAppBarTitle == "Heritage Details") {
+                IconButton(
+                    onClick = { navController.navigateUp() }
+                ) {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                        contentDescription = "Up Button"
+                    )
+                }
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = colorResource(id = R.color.purple_500),
+            navigationIconContentColor = Color.White,
+            titleContentColor = Color.White
+        )
+    )
+}
+
+@Composable
+fun MyFloatingActionButton(
+    currentBackStackEntry: NavBackStackEntry?,
+    onFilterClicked: () -> Unit
+) {
+
+    val currentRoute = currentBackStackEntry?.destination?.route
+
+    if(currentRoute != null && !currentRoute.contains("detail")) {
+        FloatingActionButton(
+            onClick = { onFilterClicked() }
+        ) {
+            Icon(
+                imageVector = Icons.Filled.FilterAlt,
+                contentDescription = "Fab Button"
+            )
+        }
+    }
+}
+
+@Composable
+fun MyBottomNavBar(
+    currentBackStackEntry: NavBackStackEntry?,
+    navController: NavHostController
+) {
+    val currentRoute = currentBackStackEntry?.destination?.route
+
+    if (currentRoute != null && !currentRoute.toString().contains("detail")) {
+        NavigationBar {
+
+            // Home
+            NavigationBarItem(
+                selected = currentRoute == "main" || currentRoute == null,
+                onClick = {
+                    if (currentRoute != "main") {
+                        navController.navigate("main")
+                    }
+                },
+                icon = {
+                    Icon(imageVector = Icons.Filled.Home, contentDescription = "Home")
+                },
+                label = { Text(text = "Home") }
+            )
+
+            // Search
+            NavigationBarItem(
+                selected = currentRoute == "search",
+                onClick = {
+                    if (currentRoute != "search") {
+                        navController.navigate("search")
+                    }
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Search,
+                        contentDescription = "Search"
+                    )
+                },
+                label = { Text(text = "Search") }
+            )
+
+            // Favourites
+            NavigationBarItem(
+                selected = currentRoute == "favourites",
+                onClick = {
+                    if (currentRoute != "favourites") {
+                        navController.navigate("favourites")
+                    }
+                },
+                icon = {
+                    Icon(
+                        imageVector = Icons.Filled.Bookmark,
+                        contentDescription = "Favourites"
+                    )
+                },
+                label = { Text(text = "Favourites") }
+            )
+        }
+    }
+}
+
+@Composable
+fun MyNavigation(
+    countryTagPrefState: State<Pair<String, String>>,
+    contentPadding: PaddingValues,
+    navController: NavHostController,
+    mainViewModel: MainViewModel = koinViewModel()
+) {
+    Box(modifier = Modifier.padding(contentPadding)) {
+        NavHost(navController = navController, startDestination = "main") {
+
+            // HomeScreen
+            composable(route = "main") {
+
+                HomeScreen(
+                    countryTagPrefState.value,
+                    onListItemClicked = {
+
+                        // This is done because Navigation Component can't directly use URL as argument
+                        // We need to encode the URL before passing it as argument
+                        // Decoding is taken care of by Compose-Navigation
+                        val encodedPageURL = Constants.encodeURLForNavigation(it.page)
+                        val encodedImageURL = Constants.encodeURLForNavigation(it.image)
+
+                        // This is done because Navigation Compose doesn't directly support '\n' like characters
+                        // So, the Pattern.DOTALL flag is used make it work
+                        val formattedShortInfo = it.shortInfo.toPattern(Pattern.DOTALL)
+                        val formattedLongInfo = it.longInfo?.toPattern(Pattern.DOTALL)
+
+                        navController.navigate(
+                            route = "detail/${it.id}/${it.year}/${it.target}/${it.name}/${it.type}/${it.region}/${it.regionLong}/${it.coordinates}/${it.lat}/${it.lng}/$encodedPageURL/$encodedImageURL/${it.imageAuthor}/${formattedShortInfo}/$formattedLongInfo"
+                        )
+
+                    }
                 )
             }
-        }
 
+            // Search Screen
+            composable(route = "search") {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Text(text = "Search Screen")
+                }
+            }
+
+            // Favourites Screen
+            composable(route = "favourites") {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    Text(text = "Favourites Screen")
+                }
+            }
+
+            composable(
+                route = "detail/{heritageID}/{heritageYear}/{heritageTarget}/{heritageName}/{heritageType}/{heritageRegion}/{heritageRegionLong}/{heritageCoordinates}/{heritageLat}/{heritageLng}/{heritagePage}/{heritageImageURL}/{heritageImageAuthor}/{heritageShortInfo}/{heritageLongInfo}",
+                arguments = listOf(
+
+                    // Heritage ID
+                    navArgument("heritageID") {
+                        type = NavType.IntType
+                    },
+
+                    // Heritage Year
+                    navArgument("heritageYear") {
+                        type = NavType.IntType
+                    },
+
+                    // Heritage Target - Country
+                    navArgument("heritageTarget") {
+                        type = NavType.StringType
+                    },
+
+                    // Heritage Name
+                    navArgument("heritageName") {
+                        type = NavType.StringType
+                    },
+
+                    // Heritage Tag
+                    navArgument("heritageType") {
+                        type = NavType.StringType
+                    },
+
+                    // Heritage Region
+                    navArgument("heritageRegion") {
+                        type = NavType.StringType
+                    },
+
+                    // Heritage RegionLong
+                    navArgument("heritageRegionLong") {
+                        type = NavType.StringType
+                    },
+
+                    // Heritage Coordinates
+                    navArgument("heritageCoordinates") {
+                        type = NavType.StringType
+                    },
+
+                    // Heritage Latitude
+                    navArgument("heritageLat") {
+                        type = NavType.StringType
+                    },
+
+                    // Heritage Longitude
+                    navArgument("heritageLng") {
+                        type = NavType.StringType
+                    },
+
+                    // Heritage Page Link
+                    navArgument("heritagePage") {
+                        type = NavType.StringType
+                    },
+
+                    // Heritage Image URL
+                    navArgument("heritageImageURL") {
+                        type = NavType.StringType
+                    },
+
+                    // Heritage Image Author
+                    navArgument("heritageImageAuthor") {
+                        type = NavType.StringType
+                    },
+
+                    // Heritage Short Info
+                    navArgument("heritageShortInfo") {
+                        type = NavType.StringType
+                    },
+
+                    // Heritage Long Info
+                    navArgument("heritageLongInfo") {
+                        type = NavType.StringType
+                    }
+
+                )
+            ) { navBackStackEntry ->
+
+                val heritageID = navBackStackEntry.arguments?.getInt("heritageID")
+                val heritageYear = navBackStackEntry.arguments?.getInt("heritageYear")
+                val heritageTarget = navBackStackEntry.arguments?.getString("heritageTarget")
+                val heritageName = navBackStackEntry.arguments?.getString("heritageName")
+                val heritageType = navBackStackEntry.arguments?.getString("heritageType")
+                val heritageRegion = navBackStackEntry.arguments?.getString("heritageRegion")
+                val heritageRegionLong =
+                    navBackStackEntry.arguments?.getString("heritageRegionLong")
+                val heritageCoordinates =
+                    navBackStackEntry.arguments?.getString("heritageCoordinates")
+                val heritageLat = navBackStackEntry.arguments?.getString("heritageLat")
+                val heritageLng = navBackStackEntry.arguments?.getString("heritageLng")
+                val heritagePage = navBackStackEntry.arguments?.getString("heritagePage")
+                val heritageImageURL = navBackStackEntry.arguments?.getString("heritageImageURL")
+                val heritageImageAuthor =
+                    navBackStackEntry.arguments?.getString("heritageImageAuthor")
+                val heritageShortInfo = navBackStackEntry.arguments?.getString("heritageShortInfo")
+                val heritageLongInfo = navBackStackEntry.arguments?.getString("heritageLongInfo")
+
+                val heritageEntity = HeritageEntity(
+                    heritageID!!,
+                    heritageYear!!,
+                    heritageTarget!!,
+                    heritageName!!,
+                    heritageType!!,
+                    heritageRegion!!,
+                    heritageRegionLong!!,
+                    heritageCoordinates!!,
+                    heritageLat!!.toDouble(),
+                    heritageLng!!.toDouble(),
+                    heritagePage!!,
+                    heritageImageURL!!,
+                    heritageImageAuthor!!,
+                    heritageShortInfo!!,
+                    heritageLongInfo
+                )
+
+                var isFavorite by remember { mutableStateOf(false) }
+
+                LaunchedEffect(key1 = Unit) {
+                    withContext(Dispatchers.IO) {
+                        isFavorite = mainViewModel.fetchFavouriteByID(heritageEntity.id)
+                    }
+                }
+
+                HeritageDetailScreen(
+                    isFavourite = isFavorite,
+                    heritage = heritageEntity,
+                    onFabClicked = {
+                        if (it) { // If Already Bookmarked, Delete Favourite
+                            mainViewModel.deleteFavourite(heritageEntity.toFavouriteEntity())
+                        } else { // Otherwise Save to Favourites
+                            mainViewModel.saveToFavourites(heritageEntity.toFavouriteEntity())
+                        }
+                    }
+                )
+
+            }
+
+        }
     }
+}
+
+
+@Composable
+fun HomeScreen(
+    countryTagPref: Pair<String, String>,
+    mainViewModel: MainViewModel = koinViewModel(),
+    onListItemClicked: (HeritageEntity) -> Unit
+) {
+
+    var heritageList by remember {
+        mutableStateOf(
+            mainViewModel.fetchAllHeritagesByFilter(
+                country = if (countryTagPref.first != "ALL") countryTagPref.first else "",
+                tag = if (countryTagPref.second != "All") countryTagPref.second else ""
+            )
+        )
+    }
+
+    LaunchedEffect(key1 = countryTagPref) {
+        heritageList = mainViewModel.fetchAllHeritagesByFilter(
+            country = if (countryTagPref.first != "ALL") countryTagPref.first else "",
+            tag = if (countryTagPref.second != "All") countryTagPref.second else ""
+        )
+    }
+
+    val heritagePagingListItems = heritageList.collectAsLazyPagingItems()
+
+    HeritageListView(
+        lazyPagingItems = heritagePagingListItems,
+        onListItemClicked = onListItemClicked
+    )
 
 }
 

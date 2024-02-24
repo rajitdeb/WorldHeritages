@@ -1,5 +1,8 @@
 package com.rajit.worldheritages.util
 
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
+
 object Constants {
 
     const val DB_NAME = "WorldHeritageDB"
@@ -357,6 +360,13 @@ object Constants {
             "SYC" -> "Seychelles"
             else -> "Unknown"
         }
+    }
+
+    // Compose-Navigation can't directly use URLs in its navigation arguments
+    // So, we encode the URL and then pass it as navArgument
+    // Decoding of this encoded URL is taken care of by Compose-Navigation
+    fun encodeURLForNavigation(url: String): String {
+        return URLEncoder.encode(url, StandardCharsets.UTF_8.toString())
     }
 
 }

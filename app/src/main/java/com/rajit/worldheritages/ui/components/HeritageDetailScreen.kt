@@ -13,20 +13,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.Link
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -53,14 +48,12 @@ import com.rajit.worldheritages.util.CustomTab
 fun HeritageDetailScreen(
     isFavourite: Boolean,
     heritage: HeritageEntity,
-    onBackClicked: () -> Unit,
     onFabClicked: (Boolean) -> Unit
 ) {
 
     val context = LocalContext.current.applicationContext
 
     Scaffold(
-        topBar = { HeritageDetailTopAppBar(onBackClicked) },
         floatingActionButton = {
             SaveToFavouriteFabButton(isFavourite, onFabClicked)
         }
@@ -96,29 +89,6 @@ fun HeritageDetailScreen(
 
     }
 
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun HeritageDetailTopAppBar(
-    onBackClicked: () -> Unit
-) {
-    TopAppBar(
-        navigationIcon = {
-            IconButton(onClick = { onBackClicked() }) {
-                Icon(
-                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back Button"
-                )
-            }
-        },
-        title = { Text("Heritage Details") },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = colorResource(id = R.color.purple_500),
-            navigationIconContentColor = Color.White,
-            titleContentColor = Color.White
-        )
-    )
 }
 
 @Composable
@@ -178,7 +148,8 @@ fun HeritageInformation(heritage: HeritageEntity) {
 
             // Heritage Short Info
             Text("About", fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Text(heritage.shortInfo)
+            // To properly format the string before setting it
+            Text(heritage.shortInfo.substringAfter("\n\n"))
 
             Spacer(Modifier.height(16.dp))
 
