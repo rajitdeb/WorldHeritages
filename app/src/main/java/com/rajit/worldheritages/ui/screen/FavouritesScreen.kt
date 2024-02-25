@@ -1,23 +1,37 @@
 package com.rajit.worldheritages.ui.screen
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import com.rajit.worldheritages.data.model.FavouriteEntity
+import com.rajit.worldheritages.ui.components.FavouriteListView
+import com.rajit.worldheritages.viewmodel.MainViewModel
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun FavouritesScreen() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            Text(text = "Favourites Screen")
-        }
+fun FavouritesScreen(
+    mainViewModel: MainViewModel = koinViewModel(),
+    onItemClicked: (FavouriteEntity) -> Unit,
+    onItemLongClicked: (FavouriteEntity) -> Unit
+) {
+
+    var favouritesList by remember {
+        mutableStateOf(
+            mainViewModel.fetchAllFavourites()
+        )
     }
+
+    LaunchedEffect(Unit) {
+        favouritesList = mainViewModel.fetchAllFavourites()
+    }
+
+    FavouriteListView(
+        favouriteListState = favouritesList.collectAsState(initial = emptyList()),
+        onClick = onItemClicked,
+        onLongClick = onItemLongClicked
+    )
 }
