@@ -300,7 +300,28 @@ fun MyNavigation(
 
             // Search Screen
             composable(route = "search") {
-                SearchScreen()
+                SearchScreen(
+                    onItemClicked = {
+                        // This is done because Navigation Component can't directly use URL as argument
+                        // We need to encode the URL before passing it as argument
+                        // Decoding is taken care of by Compose-Navigation
+                        val encodedPageURL = Constants.encodeURLForNavigation(it.page)
+                        val encodedImageURL = Constants.encodeURLForNavigation(it.image)
+
+                        // This is done because Navigation Component can't directly use multiline string as argument
+                        // We need to encode the multiline string before passing it as argument
+                        val formattedShortInfo = Constants.encodeMultiLineString(it.shortInfo)
+                        val formattedLongInfo = if (it.longInfo.isNullOrEmpty()) {
+                            "Not Available"
+                        } else {
+                            Constants.encodeMultiLineString(it.longInfo.trim())
+                        }
+
+                        navController.navigate(
+                            route = "detail/${it.id}/${it.year}/${it.target}/${it.name}/${it.type}/${it.region}/${it.regionLong}/${it.coordinates}/${it.lat}/${it.lng}/$encodedPageURL/$encodedImageURL/${it.imageAuthor}/${formattedShortInfo}/$formattedLongInfo"
+                        )
+                    }
+                )
             }
 
             // Favourites Screen

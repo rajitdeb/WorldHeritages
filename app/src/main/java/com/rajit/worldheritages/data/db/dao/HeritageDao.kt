@@ -39,6 +39,9 @@ interface HeritageDao {
         endYear: Int
     ): PagingSource<Int, HeritageEntity>
 
+    @Query("SELECT * FROM HeritageTable WHERE name LIKE '%' || :query || '%'")
+    fun getAllHeritagesBySearchQuery(query: String): PagingSource<Int, HeritageEntity>
+
     @Query("SELECT * FROM FavouritesTable")
     fun fetchAllFavourites(): Flow<List<FavouriteEntity>>
 

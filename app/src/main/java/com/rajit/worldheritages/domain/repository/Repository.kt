@@ -38,6 +38,16 @@ class Repository(
         }.flow
     }
 
+    fun fetchAllHeritagesBySearchQuery(query: String): Flow<PagingData<HeritageEntity>> {
+        return Pager(
+            config = PagingConfig(
+                pageSize = Constants.PAGE_SIZE
+            )
+        ) {
+            heritageDao.getAllHeritagesBySearchQuery(query)
+        }.flow
+    }
+
     fun fetchAllFavourites(): Flow<List<FavouriteEntity>> {
         return heritageDao.fetchAllFavourites()
     }

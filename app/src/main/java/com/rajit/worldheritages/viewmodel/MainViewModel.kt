@@ -37,6 +37,10 @@ class MainViewModel(
 
     }
 
+    fun fetchAllHeritagesBySearchQuery(query: String): Flow<PagingData<HeritageEntity>> {
+        return repository.fetchAllHeritagesBySearchQuery(query)
+    }
+
     fun fetchAllFavourites(): Flow<List<FavouriteEntity>> {
         return repository.fetchAllFavourites()
     }
