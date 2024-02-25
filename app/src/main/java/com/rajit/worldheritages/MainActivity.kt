@@ -55,6 +55,8 @@ import com.rajit.worldheritages.data.model.toFavouriteEntity
 import com.rajit.worldheritages.ui.components.HeritageDetailScreen
 import com.rajit.worldheritages.ui.components.HeritageListView
 import com.rajit.worldheritages.ui.components.MyBottomSheet
+import com.rajit.worldheritages.ui.screen.FavouritesScreen
+import com.rajit.worldheritages.ui.screen.SearchScreen
 import com.rajit.worldheritages.ui.theme.WorldHeritagesTheme
 import com.rajit.worldheritages.util.Constants
 import com.rajit.worldheritages.viewmodel.MainViewModel
@@ -183,7 +185,7 @@ fun MyFloatingActionButton(
 
     val currentRoute = currentBackStackEntry?.destination?.route
 
-    if (currentRoute != null && !currentRoute.contains("detail")) {
+    if (currentRoute != null && currentRoute.contains("main")) {
         FloatingActionButton(
             onClick = { onFilterClicked() }
         ) {
@@ -298,16 +300,12 @@ fun MyNavigation(
 
             // Search Screen
             composable(route = "search") {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Text(text = "Search Screen")
-                }
+                SearchScreen()
             }
 
             // Favourites Screen
             composable(route = "favourites") {
-                Box(modifier = Modifier.fillMaxSize()) {
-                    Text(text = "Favourites Screen")
-                }
+                FavouritesScreen()
             }
 
             composable(
