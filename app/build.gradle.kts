@@ -121,9 +121,6 @@ dependencies {
     // Navigation Component for Jetpack Compose
     implementation("androidx.navigation:navigation-compose:$navVersion")
 
-    // Gson
-    implementation("com.google.code.gson:gson:2.10.1")
-
     // AndroidX Browser Library
     implementation("androidx.browser:browser:$browserVersion")
 
