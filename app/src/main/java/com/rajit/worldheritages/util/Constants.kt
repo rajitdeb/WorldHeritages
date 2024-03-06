@@ -1,5 +1,6 @@
 package com.rajit.worldheritages.util
 
+import android.net.Uri
 import java.net.URLDecoder
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
@@ -377,6 +378,13 @@ object Constants {
     // So we are doing it ourselves
     fun decodeMultilineString(multilineString: String): String {
         return URLDecoder.decode(multilineString, StandardCharsets.UTF_8.toString())
+    }
+
+    // This converts the supplied Latitude and Longitude values to Geo URI
+    // Which is used by Google Maps to show the location
+    fun convertLatLongToMapURI(lat: Double, long: Double, label: String): Uri {
+        val geoURI = "geo:$lat,$long?q=$lat,$long($label)&z=1"
+        return Uri.parse(geoURI)
     }
 
 }

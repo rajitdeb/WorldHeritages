@@ -1,5 +1,7 @@
 package com.rajit.worldheritages.ui.components
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -112,7 +114,7 @@ fun SaveToFavouriteFabButton(
             onFabClicked(isBookMarked)
 
             // Inform the user about the action performed when Bookmark FAB is pressed
-            if(!isBookMarked) {
+            if (!isBookMarked) {
                 Toast.makeText(
                     mContext,
                     "Heritage Saved Successfully",
@@ -203,7 +205,23 @@ fun HeritageDetailBasicInformation(heritage: HeritageEntity) {
         Row {
             // Show Location in Map Button
             Button(
-                onClick = { /*TODO("Move to Google Maps with Lat Long Data")*/ },
+                onClick = {
+                    val locationURI = Constants.convertLatLongToMapURI(
+                        heritage.lat,
+                        heritage.lng,
+                        heritage.name
+                    )
+
+                    val intent = Intent(Intent.ACTION_VIEW, locationURI)
+
+                    try {
+                        intent.setPackage("com.google.android.apps.maps")
+                        mContext.startActivity(intent)
+                    } catch (e: ActivityNotFoundException) {
+                        Toast.makeText(mContext, "Google Maps not found", Toast.LENGTH_SHORT).show()
+                        mContext.startActivity(intent)
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = colorResource(id = R.color.purple_500)
                 )
