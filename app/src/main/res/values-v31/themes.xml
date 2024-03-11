@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <style name="Theme.WorldHeritages" parent="android:Theme.Material.Light.NoActionBar" />
 
     <style name="Theme.Splash" parent="Theme.SplashScreen.IconBackground">
         <!-- Splash Screen Settings -->
         <item name="windowSplashScreenBackground">@color/purple_500</item>
-        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_icon</item>
+<!--        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>-->
+        <item name="windowSplashScreenAnimatedIcon">@drawable/app_logos</item>
         <item name="windowSplashScreenAnimationDuration">1000</item>
+        <item name="android:windowSplashScreenBrandingImage">@drawable/app_branding</item>
         <item name="postSplashScreenTheme">@style/Theme.WorldHeritages</item>
     </style>
 </resources>
