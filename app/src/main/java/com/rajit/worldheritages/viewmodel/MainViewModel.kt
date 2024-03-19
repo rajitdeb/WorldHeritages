@@ -21,6 +21,9 @@ class MainViewModel(
     private var _countryTagPrefState: MutableStateFlow<Pair<String, String>> = MutableStateFlow(Pair("ALL", "All"))
     val countryTagPref: StateFlow<Pair<String, String>> get()= _countryTagPrefState
 
+    // Used for Sending Heritage Data to Heritage Detail Screen
+    var heritageDetailState: MutableStateFlow<HeritageEntity?> = MutableStateFlow(null)
+
     init {
         getCountryAndTagPreference()
     }

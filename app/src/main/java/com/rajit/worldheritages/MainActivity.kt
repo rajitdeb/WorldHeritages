@@ -43,22 +43,20 @@ import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.rajit.worldheritages.data.model.HeritageEntity
 import com.rajit.worldheritages.data.model.toFavouriteEntity
+import com.rajit.worldheritages.data.model.toHeritageEntity
 import com.rajit.worldheritages.ui.components.HeritageDetailScreen
 import com.rajit.worldheritages.ui.components.HeritageListView
 import com.rajit.worldheritages.ui.components.MyBottomSheet
 import com.rajit.worldheritages.ui.screen.FavouritesScreen
 import com.rajit.worldheritages.ui.screen.SearchScreen
 import com.rajit.worldheritages.ui.theme.WorldHeritagesTheme
-import com.rajit.worldheritages.util.Constants
 import com.rajit.worldheritages.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -265,6 +263,7 @@ fun MyNavigation(
     navController: NavHostController,
     mainViewModel: MainViewModel = koinViewModel()
 ) {
+
     Box(modifier = Modifier.padding(contentPadding)) {
         NavHost(navController = navController, startDestination = "main") {
 
@@ -275,25 +274,20 @@ fun MyNavigation(
                     countryTagPrefState.value,
                     onListItemClicked = {
 
-                        // This is done because Navigation Component can't directly use URL as argument
-                        // We need to encode the URL before passing it as argument
-                        // Decoding is taken care of by Compose-Navigation
-                        val encodedPageURL = Constants.encodeURLForNavigation(it.page)
-                        val encodedImageURL = Constants.encodeURLForNavigation(it.image)
+                        // Setting the HeritageEntity in MainViewModel for HeritageDetail Screen to retrieve
+                        mainViewModel.heritageDetailState.value = it
 
-                        // This is done because Navigation Component can't directly use multiline string as argument
-                        // We need to encode the multiline string before passing it as argument
-                        val formattedShortInfo = Constants.encodeMultiLineString(it.shortInfo)
-                        val formattedLongInfo = if (it.longInfo.isNullOrEmpty()) {
-                            "Not Available"
-                        } else {
-                            Constants.encodeMultiLineString(it.longInfo.trim())
-                        }
+                        navController.navigate(route = "detail")
 
-                        navController.navigate(
-                            route = "detail/${it.id}/${it.year}/${it.target}/${it.name}/${it.type}/${it.region}/${it.regionLong}/${it.coordinates}/${it.lat}/${it.lng}/$encodedPageURL/$encodedImageURL/${it.imageAuthor}/${formattedShortInfo}/$formattedLongInfo"
-                        )
+//                        // This is done because Navigation Component can't directly use URL as argument
+//                        // We need to encode the URL before passing it as argument
+//                        // Decoding is taken care of by Compose-Navigation
+//                        val encodedPageURL = Constants.encodeURLForNavigation(it.page)
+//                        val encodedImageURL = Constants.encodeURLForNavigation(it.image)
 
+//                        navController.navigate(
+//                            route = "detail/${it.id}/${it.year}/${it.target}/${it.name}/${it.type}/${it.region}/${it.regionLong}/${it.coordinates}/${it.lat}/${it.lng}/$encodedPageURL/$encodedImageURL/${it.imageAuthor}/${formattedShortInfo}/$formattedLongInfo"
+//                        )
                     }
                 )
             }
@@ -302,24 +296,12 @@ fun MyNavigation(
             composable(route = "search") {
                 SearchScreen(
                     onItemClicked = {
-                        // This is done because Navigation Component can't directly use URL as argument
-                        // We need to encode the URL before passing it as argument
-                        // Decoding is taken care of by Compose-Navigation
-                        val encodedPageURL = Constants.encodeURLForNavigation(it.page)
-                        val encodedImageURL = Constants.encodeURLForNavigation(it.image)
 
-                        // This is done because Navigation Component can't directly use multiline string as argument
-                        // We need to encode the multiline string before passing it as argument
-                        val formattedShortInfo = Constants.encodeMultiLineString(it.shortInfo)
-                        val formattedLongInfo = if (it.longInfo.isNullOrEmpty()) {
-                            "Not Available"
-                        } else {
-                            Constants.encodeMultiLineString(it.longInfo.trim())
-                        }
+                        // Setting the HeritageEntity in MainViewModel for HeritageDetail Screen to retrieve
+                        mainViewModel.heritageDetailState.value = it
 
-                        navController.navigate(
-                            route = "detail/${it.id}/${it.year}/${it.target}/${it.name}/${it.type}/${it.region}/${it.regionLong}/${it.coordinates}/${it.lat}/${it.lng}/$encodedPageURL/$encodedImageURL/${it.imageAuthor}/${formattedShortInfo}/$formattedLongInfo"
-                        )
+                        navController.navigate(route = "detail")
+
                     }
                 )
             }
@@ -328,170 +310,52 @@ fun MyNavigation(
             composable(route = "favourites") {
                 FavouritesScreen(
                     onItemClicked = {
-                        // This is done because Navigation Component can't directly use URL as argument
-                        // We need to encode the URL before passing it as argument
-                        // Decoding is taken care of by Compose-Navigation
-                        val encodedPageURL = Constants.encodeURLForNavigation(it.page)
-                        val encodedImageURL = Constants.encodeURLForNavigation(it.image)
 
-                        // This is done because Navigation Component can't directly use multiline string as argument
-                        // We need to encode the multiline string before passing it as argument
-                        val formattedShortInfo = Constants.encodeMultiLineString(it.shortInfo)
-                        val formattedLongInfo = if (it.longInfo.isNullOrEmpty()) {
-                            "Not Available"
-                        } else {
-                            Constants.encodeMultiLineString(it.longInfo.trim())
-                        }
+                        // Converting FavouriteEntity to HeritageEntity
+                        val heritage = it.toHeritageEntity()
 
-                        navController.navigate(
-                            route = "detail/${it.id}/${it.year}/${it.target}/${it.name}/${it.type}/${it.region}/${it.regionLong}/${it.coordinates}/${it.lat}/${it.lng}/$encodedPageURL/$encodedImageURL/${it.imageAuthor}/${formattedShortInfo}/$formattedLongInfo"
-                        )
+                        // Setting the HeritageEntity in MainViewModel for HeritageDetail Screen to retrieve
+                        mainViewModel.heritageDetailState.value = heritage
+
+                        navController.navigate(route = "detail")
                     },
                     onItemLongClicked = { mainViewModel.deleteFavourite(it) }
                 )
             }
 
-            composable(
-                route = "detail/{heritageID}/{heritageYear}/{heritageTarget}/{heritageName}/{heritageType}/{heritageRegion}/{heritageRegionLong}/{heritageCoordinates}/{heritageLat}/{heritageLng}/{heritagePage}/{heritageImageURL}/{heritageImageAuthor}/{heritageShortInfo}/{heritageLongInfo}",
-                arguments = listOf(
+            // Heritage Detail Screen
+            composable(route = "detail") {
 
-                    // Heritage ID
-                    navArgument("heritageID") {
-                        type = NavType.IntType
-                    },
-
-                    // Heritage Year
-                    navArgument("heritageYear") {
-                        type = NavType.IntType
-                    },
-
-                    // Heritage Target - Country
-                    navArgument("heritageTarget") {
-                        type = NavType.StringType
-                    },
-
-                    // Heritage Name
-                    navArgument("heritageName") {
-                        type = NavType.StringType
-                    },
-
-                    // Heritage Tag
-                    navArgument("heritageType") {
-                        type = NavType.StringType
-                    },
-
-                    // Heritage Region
-                    navArgument("heritageRegion") {
-                        type = NavType.StringType
-                    },
-
-                    // Heritage RegionLong
-                    navArgument("heritageRegionLong") {
-                        type = NavType.StringType
-                    },
-
-                    // Heritage Coordinates
-                    navArgument("heritageCoordinates") {
-                        type = NavType.StringType
-                    },
-
-                    // Heritage Latitude
-                    navArgument("heritageLat") {
-                        type = NavType.StringType
-                    },
-
-                    // Heritage Longitude
-                    navArgument("heritageLng") {
-                        type = NavType.StringType
-                    },
-
-                    // Heritage Page Link
-                    navArgument("heritagePage") {
-                        type = NavType.StringType
-                    },
-
-                    // Heritage Image URL
-                    navArgument("heritageImageURL") {
-                        type = NavType.StringType
-                    },
-
-                    // Heritage Image Author
-                    navArgument("heritageImageAuthor") {
-                        type = NavType.StringType
-                    },
-
-                    // Heritage Short Info
-                    navArgument("heritageShortInfo") {
-                        type = NavType.StringType
-                    },
-
-                    // Heritage Long Info
-                    navArgument("heritageLongInfo") {
-                        type = NavType.StringType
-                    }
-
-                )
-            ) { navBackStackEntry ->
-
-                val heritageID = navBackStackEntry.arguments?.getInt("heritageID")
-                val heritageYear = navBackStackEntry.arguments?.getInt("heritageYear")
-                val heritageTarget = navBackStackEntry.arguments?.getString("heritageTarget")
-                val heritageName = navBackStackEntry.arguments?.getString("heritageName")
-                val heritageType = navBackStackEntry.arguments?.getString("heritageType")
-                val heritageRegion = navBackStackEntry.arguments?.getString("heritageRegion")
-                val heritageRegionLong =
-                    navBackStackEntry.arguments?.getString("heritageRegionLong")
-                val heritageCoordinates =
-                    navBackStackEntry.arguments?.getString("heritageCoordinates")
-                val heritageLat = navBackStackEntry.arguments?.getString("heritageLat")
-                val heritageLng = navBackStackEntry.arguments?.getString("heritageLng")
-                val heritagePage = navBackStackEntry.arguments?.getString("heritagePage")
-                val heritageImageURL = navBackStackEntry.arguments?.getString("heritageImageURL")
-                val heritageImageAuthor =
-                    navBackStackEntry.arguments?.getString("heritageImageAuthor")
-                val heritageShortInfo = navBackStackEntry.arguments?.getString("heritageShortInfo")
-                val heritageLongInfo = navBackStackEntry.arguments?.getString("heritageLongInfo")
-
-                val heritageEntity = HeritageEntity(
-                    heritageID!!,
-                    heritageYear!!,
-                    heritageTarget!!,
-                    heritageName!!,
-                    heritageType!!,
-                    heritageRegion!!,
-                    heritageRegionLong!!,
-                    heritageCoordinates!!,
-                    heritageLat!!.toDouble(),
-                    heritageLng!!.toDouble(),
-                    heritagePage!!,
-                    heritageImageURL!!,
-                    heritageImageAuthor!!,
-                    Constants.decodeMultilineString(heritageShortInfo!!), // Since Compose decoding is not decoding multiline properly so we do it manually
-                    Constants.decodeMultilineString(heritageLongInfo!!) // Since Compose decoding is not decoding multiline properly so we do it manually
-                )
+                var heritage by remember {
+                    mutableStateOf<HeritageEntity?>(null)
+                }
 
                 var isFavorite by remember { mutableStateOf(false) }
 
                 LaunchedEffect(key1 = Unit) {
                     withContext(Dispatchers.IO) {
-                        isFavorite = mainViewModel.fetchFavouriteByID(heritageEntity.id)
+                        heritage = mainViewModel.heritageDetailState.value
+                        if (heritage != null) {
+                            isFavorite = mainViewModel.fetchFavouriteByID(heritage!!.id)
+                        }
                     }
                 }
 
-                HeritageDetailScreen(
-                    isFavourite = isFavorite,
-                    heritage = heritageEntity,
-                    onFabClicked = {
-                        if (it) { // If Already Bookmarked, Delete Favourite
-                            mainViewModel.deleteFavourite(heritageEntity.toFavouriteEntity())
-                        } else { // Otherwise Save to Favourites
-                            mainViewModel.saveToFavourites(heritageEntity.toFavouriteEntity())
+                if (heritage != null) {
+                    HeritageDetailScreen(
+                        isFavourite = isFavorite,
+                        heritage = heritage!!,
+                        onFabClicked = {
+                            if (it) { // If Already Bookmarked, Delete Favourite
+                                mainViewModel.deleteFavourite(heritage!!.toFavouriteEntity())
+                            } else { // Otherwise Save to Favourites
+                                mainViewModel.saveToFavourites(heritage!!.toFavouriteEntity())
+                            }
                         }
-                    }
-                )
+                    )
+                }
 
             }
-
         }
     }
 }
