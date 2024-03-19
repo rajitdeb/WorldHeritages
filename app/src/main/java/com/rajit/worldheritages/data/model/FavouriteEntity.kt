@@ -23,3 +23,21 @@ data class FavouriteEntity(
     val shortInfo: String,
     val longInfo: String?
 )
+
+fun FavouriteEntity.toHeritageEntity() = HeritageEntity(
+    id,
+    year,
+    target,
+    name,
+    type,
+    region,
+    regionLong,
+    coordinates,
+    lat,
+    lng,
+    page,
+    image,
+    imageAuthor,
+    shortInfo,
+    longInfo
+)
