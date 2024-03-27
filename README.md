@@ -5,6 +5,9 @@ An android app for helping people discover W​orld Heritages​ recognised by U
 ![Powered by - Kotlin](https://img.shields.io/badge/Powered_by-Kotlin-B322E9)
 ![Release Version](https://img.shields.io/badge/release-v1.0.0-blue)
 
+## Download APK 📦
+Latest APK available <a href="https://github.com/rajitdeb/WorldHeritages/releases">here</a>
+
 ## Screenshots 📷
 | Splash Screen <br>(using new Splash Screen API) | Screenshot 1 | Screenshot 2 |
 | ------------- | ------------ | ------------ |
